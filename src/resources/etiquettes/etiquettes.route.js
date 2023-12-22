@@ -1,11 +1,15 @@
 const express = require('express');
+const { validatorMiddleware } = require('../../middlewares/validator');
+const { validateCreationEtiquette } = require('../../dto/validateCreationEtiquette');
 
 const {
-    getEtiquettes
+    createEtiquette,
+    getEtiquette
 } = require('./etiquettes.controller');
 
 const router = express.Router();
 
-router.route('').post(getEtiquettes);
+router.route('').post([validatorMiddleware(validateCreationEtiquette)], createEtiquette);
+router.route('/s').get(getEtiquette);
 
 module.exports = router;

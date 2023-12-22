@@ -22,7 +22,7 @@ const patterns = Object.fromEntries(new Map([
 	["Expe_Pays", "^[A-Z]{2}$"],
 	["Expe_Tel1", "^((00|\\+)33|0)[0-9][0-9]{8}$"],
 	["Expe_Tel2", "^((00|\\+)33|0)[0-9][0-9]{8}$"],
-	["Expe_Mail", "^[0-9a-zA-Z!#$%&'*+/=?^_`{|}~-]+((\\.[a-zAZ0-9!#$%&'*+/=?^_`{|}~-]+)?)+@(?:[a-zAZ0-9](?:[a-zA-Z0-9-_]*[a-zA-Z0-9])?\\.)+[azA-Z0-9](?:[a-zA-Z0-9\\-]*[a-zA-Z0-9])?$"],
+	["Expe_Mail", "^[0-9a-zA-Z!#$%&'*+/=?^_`{|}~-]+((\\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)?)+@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-_]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9\-]*[a-zA-Z0-9])?$"],
 	["Dest_Langage", "^[A-Z]{2}$"],
 	["Dest_Ad1", "^[0-9A-Z_\\-'., /]{2,32}$"],
 	["Dest_Ad2", "^[0-9A-Z_\\-'., /]{2,32}$"],
@@ -41,8 +41,8 @@ const patterns = Object.fromEntries(new Map([
 	["NbColis", "^[0-9]{1,2}$"],
 	["CRT_Valeur", "^0$"],
 	["CRT_Devise", "^(|EUR)$"],
-	["EXP_Valeur", "^[0-9]{0,7}$"],
-	["EXP_Devise", "^(|EUR)$"],
+	["Exp_Valeur", "^[0-9]{0,7}$"],
+	["Exp_Devise", "^(|EUR)$"],
 	["COL_Rel_Pays", "^[A-Z]{2}$"],
 	["COL_Rel", "^(|[0-9]{6})$"],
 	["LIV_Rel_Pays", "^[A-Z]{2}$"],
@@ -57,7 +57,7 @@ const patterns = Object.fromEntries(new Map([
 ]));
 
 const usePattern = (name) => {
-	if(!patterns[name]) throw new Error('Pattern not found : ' + name)
+	if (!patterns[name]) throw new Error('Pattern not found : ' + name)
 
 	return new RegExp(patterns[name])
 }

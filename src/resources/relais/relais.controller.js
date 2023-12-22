@@ -3,18 +3,23 @@ const Joi = require('joi');
 const { usePattern } = require('../../utils/pattern');
 const { status } = require('../../utils/status');
 
-
 const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
 
 const scheduleKeys = days.map(key => `Horaires_${key}`)
 
 const transformHourly = (hourly) => hourly.slice(0, 2) + 'h' + hourly.slice(2);
 
+const isClosed = (hourly) => !!(hourly === '0000')
+
 const mountHourly = (element) => {
     return scheduleKeys.map((key, index) => ({
-        [days[index]] : {
-            matin: `${transformHourly(element[key].string[0])} : ${transformHourly(element[key].string[1])}`,
-            aprem: `${transformHourly(element[key].string[2])} : ${transformHourly(element[key].string[3])}`
+        [days[index]]: {
+            matin: !isClosed(element[key].string[0]) ?
+                `${transformHourly(element[key].string[0])} : ${transformHourly(element[key].string[1])}`
+                : 'fermé',
+            aprem: !isClosed(element[key].string[2]) ?
+                `${transformHourly(element[key].string[2])} : ${transformHourly(element[key].string[3])}`
+                : 'fermé'
         }
     }))
 }
@@ -30,16 +35,18 @@ const transformData = (data) => {
 }
 
 module.exports = {
-    async getRelais (req, res) {        
-        const params = req.body;      
+    async getRelais(req, res) {
+        const params = req.body;
         execute({
             func: 'WSI4_PointRelais_Recherche', params, callback: (data) => {
                 const statusCode = data.WSI4_PointRelais_RechercheResult.STAT
-                if(statusCode !== "0") return res.status(400).json({ err : status[statusCode]})
+                if (statusCode !== "0") return res.status(400).json({ ok: false, err: status[statusCode] })
 
-                const formatedData = transformData(data.WSI4_PointRelais_RechercheResult.PointsRelais.PointRelais_Details); 
+                if (!data.WSI4_PointRelais_RechercheResult.PointsRelais) return res.status(404).json({ ok: false, err: "Not found" })
 
-                res.send(JSON.stringify(formatedData))
+                const formatedData = transformData(data.WSI4_PointRelais_RechercheResult.PointsRelais.PointRelais_Details);
+
+                res.send(JSON.stringify({ ok: true, relais: formatedData }))
             }
         })
     }

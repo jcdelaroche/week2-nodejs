@@ -1,6 +1,6 @@
 const express = require('express');
 const { validateRechercheRelais } = require('../../dto/validateRechercheRelais');
-const { validatorMidlleware } = require('../../middlewares/validator');
+const { validatorMiddleware } = require('../../middlewares/validator');
 
 const {
     getRelais
@@ -8,6 +8,6 @@ const {
 
 const router = express.Router();
 
-router.route('').post([validatorMidlleware(validateRechercheRelais)], getRelais);
+router.route('').post([validatorMiddleware(validateRechercheRelais)], getRelais);
 
 module.exports = router;
