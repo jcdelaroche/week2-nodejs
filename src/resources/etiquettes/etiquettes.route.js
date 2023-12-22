@@ -1,11 +1,11 @@
 const express = require('express');
 
 const {
-    getRelais
-} = require('./relais.controller');
+    getEtiquettes
+} = require('./etiquettes.controller');
 
 const router = express.Router();
 
-router.get('', getRelais);
+router.route('').post(getEtiquettes);
 
 module.exports = router;

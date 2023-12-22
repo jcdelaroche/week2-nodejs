@@ -5,16 +5,29 @@ const merchant = process.env.MERCHANT;
 const key = process.env.PRIVATE_KEY;
 const apiUrl = 'https://api.mondialrelay.com/Web_Services.asmx?WSDL';
 
+const baseParams = {
+    Enseigne: merchant
+}
+
 const securityKey = (args) => {
-    const content = args.filter(n => n).join('') + privateKey;
+    console.log(args)
+    const content = args.filter(n => n).join('') + key;
     return crypto.createHash('md5').update(content).digest('hex').toUpperCase();
 }
 
 const execute = ({ url = apiUrl, func, params, callback }) => {
     soap.createClient(url, (err, client) => {
         client.setEndpoint(url);
-        params.Security = securityKey(Object.values(params));
-        client[func](params, (err, result) => {
+        let mergedParams = {
+            ...baseParams, 
+            ...params
+        }
+        const { Texte = undefined} = mergedParams;
+        delete mergedParams.Texte;
+        mergedParams.Security = securityKey(Object.values(mergedParams));
+        if(Texte) mergedParams = {...mergedParams, Texte}
+        console.log(mergedParams)
+        client[func](mergedParams, (err, result) => {
             if (err) callback(err);
 
             callback(result);
